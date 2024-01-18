@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -210,16 +211,14 @@
     const currentTime = new Date();
     const difference = targetDate - currentTime;
 
-    const hours = Math.floor(difference / 1000 / 60 / 60);
-    const minutes = Math.floor(difference / 1000 / 60) % 60;
-    const seconds = Math.floor(difference / 1000) % 60;
+    const hours = Math.floor(difference / (1000 * 60 * 60));
+    const minutes = Math.floor((difference / (1000 * 60)) % 60);
+    const seconds = Math.floor((difference / 1000) % 60);
 
     countdownElement.innerText = `${hours}시간 ${minutes}분 ${seconds}초`;
-
-    loadRecentComments().then(comments => {
-      messageElement.innerText = comments.join('\n');
-    });
   }
+
+
 
   document.getElementById('submit-comment-btn').addEventListener('click', submitComment);
 
