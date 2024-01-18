@@ -86,7 +86,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyATynX9lZt12x6MAw5VObd23MN6kPGGD8Y",
@@ -103,13 +103,7 @@
   const countdownElement = document.getElementById('time-left');
   const messageElement = document.getElementById('message');
   const targetDate = new Date('2024-01-22T09:00:00');
-  const messages = [
-    "출근 준비했어, 상윤아?",
-    "이제 일해야지~~",
-    "잠자는 시간은 안빼줬어~ㅎㅎ",
-    "강동왕 윤강동",
-    "다음번엔 도봉구로 가자~!",
-  ];
+
 
   function submitComment() {
     const commentInput = document.getElementById("comment-input");
@@ -125,14 +119,19 @@
     }
   }
 
+  function loadRecentComments() {
+    const commentsQuery = query(collection(db, "comments"), orderBy("timestamp", "desc"), limit(5));
+    return getDocs(commentsQuery).then((querySnapshot) => {
+      return querySnapshot.docs.map(doc => doc.data().text);
+    });
+  }
+
   function loadComments() {
     const commentsDiv = document.getElementById("comments");
-    commentsDiv.innerHTML = "";
-
     const commentsQuery = query(collection(db, "comments"), orderBy("timestamp", "desc"));
 
     onSnapshot(commentsQuery, (querySnapshot) => {
-      commentsDiv.innerHTML = "";  // 이전 댓글을 지우고 새로 시작
+      commentsDiv.innerHTML = "";
       querySnapshot.forEach((doc) => {
         const comment = document.createElement("p");
         comment.textContent = doc.data().text;
@@ -151,8 +150,9 @@
 
     countdownElement.innerText = `${hours}시간 ${minutes}분 ${seconds}초`;
 
-    const randomIndex = Math.floor(Math.random() * messages.length);
-    messageElement.innerText = messages[randomIndex];
+    loadRecentComments().then(comments => {
+      messageElement.innerText = comments.join('\n');
+    });
   }
 
   document.getElementById('submit-comment-btn').addEventListener('click', submitComment);
