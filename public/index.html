@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
+
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,6 +19,67 @@
       margin: 0;
       padding: 0;
     }
+
+    .slide-container {
+      position: relative; /* 상대 위치 설정 */
+      width: 100%; /* 전체 너비 설정 */
+      height: 50px; /* 적절한 높이 설정 */
+      margin-top: 30px;
+    }
+
+    @keyframes fade {
+      0%, 100% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+
+    .slide-container p {
+      text-align: center; /* 텍스트 중앙 정렬 */
+      width: 100%; /* 전체 너비 설정 */
+      animation: fade 5s linear;
+    }
+
+    @keyframes slide {
+      0% {
+        right: 100%; /* 오른쪽에서 시작 */
+        opacity: 0; /* 투명도를 0으로 설정하여 보이지 않게 함 */
+      }
+      10%, 90% {
+        right: 0;
+        opacity: 1; /* 완전히 보이게 함 */
+      }
+      100% {
+        right: -100%; /* 왼쪽으로 사라짐 */
+        opacity: 0;
+      }
+    }
+
+    @keyframes slide-out {
+      0% {
+        left: 0;
+        opacity: 1;
+      }
+      100% {
+        left: -100%;
+        opacity: 0;
+      }
+    }
+
+    @keyframes slide-in {
+      0% {
+        left: 100%;
+        opacity: 0;
+      }
+      100% {
+        left: 0;
+        opacity: 1;
+      }
+    }
+
+
     #countdown {
       text-align: center;
       margin-bottom: 20px;
@@ -75,7 +138,7 @@
 <div id="countdown">
   <h1>상윤이 출근까지 남은 시간</h1>
   <div id="time-left"></div>
-  <div id="message"></div>
+  <div id="message" class="slide-container"></div>
 </div>
 <div id="comment-section">
   <h2>댓글</h2>
@@ -87,6 +150,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 
   const firebaseConfig = {
     apiKey: "AIzaSyATynX9lZt12x6MAw5VObd23MN6kPGGD8Y",
@@ -122,9 +186,34 @@
   function loadRecentComments() {
     const commentsQuery = query(collection(db, "comments"), orderBy("timestamp", "desc"), limit(5));
     return getDocs(commentsQuery).then((querySnapshot) => {
-      return querySnapshot.docs.map(doc => doc.data().text);
+      comments = querySnapshot.docs.map(doc => doc.data().text).reverse(); // 댓글들을 역순으로 배열에 저장
+      showComment();
     });
   }
+
+
+  setInterval(showComment, 6000); // 5초마다 댓글 변경
+
+
+  let currentCommentIndex = 0;
+  let comments = [];
+
+  function showComment() {
+    // 기존 댓글을 제거
+    messageElement.innerHTML = '';
+
+    if (comments.length > 0) {
+      // 현재 인덱스의 댓글을 표시
+      const comment = document.createElement("p");
+      comment.textContent = comments[currentCommentIndex];
+      comment.style.animation = 'fade 5s linear';
+      messageElement.appendChild(comment);
+
+      // 다음 댓글로 인덱스 업데이트
+      currentCommentIndex = (currentCommentIndex + 1) % comments.length;
+    }
+  }
+
 
   function loadComments() {
     const commentsDiv = document.getElementById("comments");
