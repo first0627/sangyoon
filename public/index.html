@@ -16,10 +16,9 @@
       align-items: center;
       height: 100vh;
       background-color: #f0f0f0;
-      background-image: url("/bg.jpg");
       margin: 0;
       padding: 0;
-    }
+    }vc
 
     .slide-container {
       position: relative; /* 상대 위치 설정 */
@@ -194,12 +193,13 @@
   }
 
 
+  // Firestore에서 실시간으로 댓글 로드
   function loadComments() {
     const commentsDiv = document.getElementById("comments");
     const commentsQuery = query(collection(db, "comments"), orderBy("timestamp", "desc"));
 
     onSnapshot(commentsQuery, (querySnapshot) => {
-      commentsDiv.innerHTML = "";
+      commentsDiv.innerHTML = ""; // 댓글 목록을 초기화
       querySnapshot.forEach((doc) => {
         const comment = document.createElement("p");
         comment.textContent = doc.data().text;
@@ -207,6 +207,7 @@
       });
     });
   }
+
 
   function updateCountdown() {
     const currentTime = new Date();
