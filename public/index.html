@@ -53,19 +53,19 @@
     #countdown {
       text-align: center;
       margin-bottom: 20px;
-      color: darkred;
+      color: darkolivegreen;
 
     }
 
     #time-left {
       font-size: 2em;
       margin-top: 20px;
-      color: darkred;
+      color: darkolivegreen;
     }
 
     #message {
       margin-top: 30px;
-      color: darkred;
+      color: darkolivegreen;
     }
 
     #comment-section {
@@ -114,9 +114,18 @@
       margin-bottom: 10px;
     }
 
+    #loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
   </style>
 </head>
 <body>
+<div id="loading" style="display: none;">로딩 중...</div>
+
 <div id="countdown">
   <h1>상윤이 출근까지 남은 시간</h1>
   <div id="time-left"></div>
@@ -209,6 +218,8 @@
     const commentsDiv = document.getElementById("comments");
     const commentsQuery = query(collection(db, "comments"), orderBy("timestamp", "desc"));
 
+    let initialLoad = true; // 초기 데이터 로드 확인을 위한 플래그
+
     onSnapshot(commentsQuery, (querySnapshot) => {
       commentsDiv.innerHTML = ""; // 댓글 목록을 초기화
       querySnapshot.forEach((doc) => {
@@ -216,8 +227,14 @@
         comment.textContent = doc.data().text;
         commentsDiv.appendChild(comment);
       });
+
+      if (initialLoad) {
+        hideLoading(); // 최초 데이터 로드 시 로딩 숨김
+        initialLoad = false; // 플래그 업데이트
+      }
     });
   }
+
 
 
   function updateCountdown() {
@@ -231,14 +248,30 @@
     countdownElement.innerText = `${hours}시간 ${minutes}분 ${seconds}초`;
   }
 
+  function showLoading() {
+    document.getElementById('loading').style.display = 'block';
+  }
+
+  function hideLoading() {
+    document.getElementById('loading').style.display = 'none';
+  }
+
+  // 데이터 로드 전에 로딩 표시
 
 
   document.getElementById('submit-comment-btn').addEventListener('click', submitComment);
 
   window.onload = () => {
-    loadComments();
+    showLoading();
+
+    loadComments().finally(() => {
+      // 데이터 로드 성공 여부와 상관없이 로딩 숨김
+      hideLoading();
+    });
+
     loadRecentComments();
   };
+
   setInterval(showComment, 3000); // 5초마다 댓글 변경
   setInterval(updateCountdown, 1000);
 </script>
