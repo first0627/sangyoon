@@ -17,16 +17,19 @@
       background-color: #f0f0f0;
       margin: 0;
       padding: 0;
-      background-image: url("/yoon.jpeg");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      background-image: url("/yoon.jpeg"); /* 배경 이미지 설정 */
+      background-size: cover; /* 이미지가 전체 배경을 커버하도록 설정 */
+      background-position: center; /* 이미지가 중앙에 위치하도록 설정 */
+      background-repeat: no-repeat; /* 이미지 반복 없앰 */
+
+
     }
 
+    vc
     .slide-container {
-      position: relative;
-      width: 100%;
-      height: 50px;
+      position: relative; /* 상대 위치 설정 */
+      width: 100%; /* 전체 너비 설정 */
+      height: 50px; /* 적절한 높이 설정 */
       margin-top: 30px;
     }
 
@@ -40,36 +43,46 @@
     }
 
     .slide-container p {
-      text-align: center;
-      width: 100%;
+      text-align: center; /* 텍스트 중앙 정렬 */
+      width: 100%; /* 전체 너비 설정 */
       animation: fade 5s linear;
     }
 
+
     #countdown {
+
       text-align: center;
       margin-bottom: 20px;
       color: red;
+
     }
 
     #countdown h1 {
-      text-shadow: 2px 2px 4px #000000;
+      text-shadow: 2px 2px 4px #000000; /* 텍스트 그림자 추가 */
+    }
+
+
+    #time-left {
+      color: red; /* 글자색 변경 */
+      text-shadow: 2px 2px 4px #000000; /* 텍스트 그림자 추가 */
     }
 
     #time-left {
       font-size: 3em;
       font-weight: bold;
       margin-top: 20px;
-      color: red;
-      text-shadow: 2px 2px 4px #000000;
+      color: red
     }
+
 
     #comment-section {
       width: 80%;
       max-width: 500px;
-      background-color: rgba(255, 255, 255, 0.5);
+      background-color: rgba(255, 255, 255, 0.5); /* 투명도 조절 */
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
     }
 
     #comment-input {
@@ -97,8 +110,8 @@
 
     #comments {
       margin-top: 20px;
-      max-height: 300px;
-      overflow-y: auto;
+      max-height: 300px; /* 최대 높이 설정 */
+      overflow-y: auto; /* 세로 스크롤바 설정 */
     }
 
     #comments p {
@@ -126,7 +139,7 @@
   <div id="message" class="slide-container"></div>
 </div>
 <div id="comment-section">
-  <h2>댓글</h2>
+  <h2 style = 'text-align: center; color: yellowgreen' >응원 한마디>_<</h2>
   <div id="comments"></div>
   <input type="text" id="comment-input" placeholder="댓글을 입력하세요"/>
   <button id="submit-comment-btn">댓글 달기</button>
@@ -142,9 +155,11 @@
     orderBy,
     onSnapshot,
     serverTimestamp,
+    getDocs,
+    limit
   } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // Firebase 설정 초기화
+
   const firebaseConfig = {
     apiKey: "AIzaSyATynX9lZt12x6MAw5VObd23MN6kPGGD8Y",
     authDomain: "sangyoon-e4791.firebaseapp.com",
@@ -161,7 +176,7 @@
   const messageElement = document.getElementById('message');
   const targetDate = new Date('2024-01-22T09:00:00');
 
-  // 댓글 제출 기능
+
   function submitComment() {
     const commentInput = document.getElementById("comment-input");
     const comment = commentInput.value.trim();
@@ -176,11 +191,27 @@
     }
   }
 
-  // 댓글 표시 기능
+  function loadRecentComments() {
+    const commentsQuery = query(collection(db, "comments"), orderBy("timestamp", "desc"), limit(5));
+    return getDocs(commentsQuery).then((querySnapshot) => {
+      comments = querySnapshot.docs.map(doc => doc.data().text).reverse(); // 댓글들을 역순으로 배열에 저장
+      showComment();
+    });
+  }
+
+
+  let currentCommentIndex = 0;
+  let comments = [];
+
   function showComment() {
+    // 기존 댓글을 제거
+    messageElement.innerHTML = '';
+
     if (comments.length > 0) {
+      // 현재 인덱스의 댓글을 표시
       const comment = document.createElement("p");
       comment.textContent = comments[currentCommentIndex];
+      comment.style.animation = 'fade 5s linear';
       messageElement.appendChild(comment);
 
       // 다음 댓글로 인덱스 업데이트
@@ -188,22 +219,30 @@
     }
   }
 
-  // Firestore에서 실시간 댓글 로드 기능
+
+  // Firestore에서 실시간으로 댓글 로드
   function loadComments() {
     const commentsDiv = document.getElementById("comments");
     const commentsQuery = query(collection(db, "comments"), orderBy("timestamp", "desc"));
 
+    let initialLoad = true; // 초기 데이터 로드 확인을 위한 플래그
+
     onSnapshot(commentsQuery, (querySnapshot) => {
-      commentsDiv.innerHTML = "";
+      commentsDiv.innerHTML = ""; // 댓글 목록을 초기화
       querySnapshot.forEach((doc) => {
         const comment = document.createElement("p");
         comment.textContent = doc.data().text;
         commentsDiv.appendChild(comment);
       });
+
+      if (initialLoad) {
+        hideLoading(); // 최초 데이터 로드 시 로딩 숨김
+        initialLoad = false; // 플래그 업데이트
+      }
     });
   }
 
-  // 카운트다운 업데이트 기능
+
   function updateCountdown() {
     const currentTime = new Date();
     const difference = targetDate - currentTime;
@@ -215,16 +254,35 @@
     countdownElement.innerText = `${hours}시간 ${minutes}분 ${seconds}초`;
   }
 
-  // 이벤트 리스너 설정
+  function showLoading() {
+    document.getElementById('loading').style.display = 'block';
+  }
+
+  function hideLoading() {
+    document.getElementById('loading').style.display = 'none';
+  }
+
+  // 데이터 로드 전에 로딩 표시
+
+
   document.getElementById('submit-comment-btn').addEventListener('click', submitComment);
 
-  // 페이지 로드 시 실행되는 함수
   window.onload = () => {
-    loadComments();
-    setInterval(showComment, 3000); // 3초마다 댓글 변경
-    setInterval(updateCountdown, 1000); // 1초마다 카운트다운 업데이트
+    showLoading();
+
+    loadComments().finally(() => {
+      // 데이터 로드 성공 여부와 상관없이 로딩 숨김
+      hideLoading();
+    });
+
+    loadRecentComments();
   };
+
+  setInterval(showComment, 3000); // 5초마다 댓글 변경
+  setInterval(updateCountdown, 1000);
 </script>
 </body>
 </html>
+
+
 
