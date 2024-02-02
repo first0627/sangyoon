@@ -17,6 +17,39 @@
       font-style: normal;
     }
 
+    /* 기존 스타일에 더해질 내용 */
+
+    @media (max-width: 768px) {
+      .title {
+        font-size: 3rem; /* 모바일 기기에서 타이틀 폰트 크기 감소 */
+        top: 10%; /* 상단 위치 조정 */
+      }
+
+      .animated-text {
+        font-size: 1.5rem; /* 모바일 기기에서 애니메이션 텍스트 폰트 크기 감소 */
+        top: 20%; /* 위치 조정 */
+      }
+
+      .note-input, .input-name {
+        font-size: 14px; /* 입력 필드 폰트 크기 조정 */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .title {
+        font-size: 2rem; /* 더 작은 모바일 기기에서 타이틀 폰트 크기 더 감소 */
+      }
+
+      .animated-text {
+        font-size: 1rem; /* 더 작은 모바일 기기에서 애니메이션 텍스트 폰트 크기 감소 */
+      }
+
+      .note-input, .input-name {
+        font-size: 12px; /* 더 작은 화면에서 입력 필드 폰트 크기 조정 */
+      }
+    }
+
+
     body, html {
       height: 100%;
       margin: 0;
