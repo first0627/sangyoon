@@ -1,288 +1,151 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>상윤이 출근 카운트다운</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+
+
+
+  <title>축복 노트</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+
+    @font-face {
+      font-family: 'iceJaram-Rg';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-2@1.0/iceJaram-Rg.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body, html {
+      height: 100%;
+      margin: 0;
+      background-color: #f5f5dc;
+    }
+
+    .notebook {
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      background-color: #f0f0f0;
-      margin: 0;
-      padding: 0;
-      background-image: url("/yoon.jpeg"); /* 배경 이미지 설정 */
-      background-size: cover; /* 이미지가 전체 배경을 커버하도록 설정 */
-      background-position: center; /* 이미지가 중앙에 위치하도록 설정 */
-      background-repeat: no-repeat; /* 이미지 반복 없앰 */
-
-
+      height: 100%;
+    }
+    .page {
+      background: url("123.png");
+      background-size: cover;
+      width: 60%;
+      height: 80%;
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative; /* 추가: positioning context 제공 */
     }
 
-    vc
-    .slide-container {
-      position: relative; /* 상대 위치 설정 */
-      width: 100%; /* 전체 너비 설정 */
-      height: 50px; /* 적절한 높이 설정 */
-      margin-top: 30px;
-    }
-
-    @keyframes fade {
-      0%, 100% {
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-    }
-
-    .slide-container p {
-      text-align: center; /* 텍스트 중앙 정렬 */
-      width: 100%; /* 전체 너비 설정 */
-      animation: fade 5s linear;
-    }
-
-
-    #countdown {
-
-      text-align: center;
-      margin-bottom: 20px;
-      color: red;
-
-    }
-
-    #countdown h1 {
-      text-shadow: 2px 2px 4px #000000; /* 텍스트 그림자 추가 */
-    }
-
-
-    #time-left {
-      color: red; /* 글자색 변경 */
-      text-shadow: 2px 2px 4px #000000; /* 텍스트 그림자 추가 */
-    }
-
-    #time-left {
-      font-size: 3em;
-      font-weight: bold;
-      margin-top: 20px;
-      color: red
-    }
-
-
-    #comment-section {
-      width: 80%;
-      max-width: 500px;
-      background-color: rgba(255, 255, 255, 0.5); /* 투명도 조절 */
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-    }
-
-    #comment-input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-
-    #submit-comment-btn {
-      width: 100%;
-      padding: 10px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    #submit-comment-btn:hover {
-      background-color: #45a049;
-    }
-
-    #comments {
-      margin-top: 20px;
-      max-height: 300px; /* 최대 높이 설정 */
-      overflow-y: auto; /* 세로 스크롤바 설정 */
-    }
-
-    #comments p {
-      background-color: #f2f2f2;
-      padding: 8px;
-      border-radius: 4px;
-      margin-bottom: 10px;
-    }
-
-    #loading {
-      position: fixed;
-      top: 50%;
+    .input-name {
+      position: absolute;
+      bottom: 10%; /* 페이지의 아래쪽에 위치 */
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
+      font-size: 1.5rem;
+      padding: 10px;
+      border: none;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      outline: none;
+      font-family: 'Noto Sans KR', sans-serif;
     }
 
+
+    .note-input {
+      background: transparent;
+      border: none;
+      width: 90%;
+      height: 90%;
+      font-size: 16px;
+      resize: none;
+    }
+
+    .title {
+      position: absolute;
+      top: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 5rem;
+      color: black;
+
+      text-shadow: 2px 2px 2px #000;
+      font-family: 'iceJaram-Rg';
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+
+
+    .animated-text {
+      color: brown;
+      font-size: 2.5rem;
+      font-weight: bolder;
+
+      position: absolute;
+      top: 30%; /* 상대적으로 상위 요소인 .page 중앙에 위치 */
+      left: 50%; /* 이미지의 왼쪽 가장자리에서 시작하도록 조정 */
+      transform: translate(-50%, -50%);
+      white-space: pre;
+      /*text-shadow: 2px 2px 2px #000;*/
+      font-family: 'iceJaram-Rg';
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+
+    @keyframes writing {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
-<div id="loading" style="display: none;">로딩 중...</div>
-
-<div id="countdown">
-  <h1 style = 'color: black'>상윤이 출근까지 남은 시간</h1>
-  <div id="time-left"></div>
-  <div id="message" class="slide-container"></div>
+<div class="notebook">
+  <div class="page">
+    <div class="title">축복 노트</div>
+    <div id="animatedText" class="animated-text"></div>
+  </div>
 </div>
-<div id="comment-section">
-  <h2 style = 'text-align: center; color: black' >응원 한마디>_<</h2>
-  <div id="comments"></div>
-  <input type="text" id="comment-input" placeholder="댓글을 입력하세요"/>
-  <button id="submit-comment-btn">댓글 달기</button>
-</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const target = document.getElementById('animatedText');
+    const texts = ["송영빈", "이동현"]; // 애니메이션을 적용할 텍스트 배열
+    const overallDuration = 4000; // 각 텍스트 블록에 대한 전체 애니메이션 지속 시간
 
-<script type="module">
-  import {initializeApp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    query,
-    orderBy,
-    onSnapshot,
-    serverTimestamp,
-    getDocs,
-    limit
-  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    function animateText(text, callback) {
+      const textContainer = document.createElement('div');
+      target.appendChild(textContainer);
 
+      let delay = overallDuration / text.length;
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyATynX9lZt12x6MAw5VObd23MN6kPGGD8Y",
-    authDomain: "sangyoon-e4791.firebaseapp.com",
-    projectId: "sangyoon-e4791",
-    storageBucket: "sangyoon-e4791.appspot.com",
-    messagingSenderId: "1014947641743",
-    appId: "1:1014947641743:web:603f91bebd05a0715af3fa"
-  };
+      for (let i = 0; i < text.length; i++) {
+        setTimeout(() => {
+          let span = document.createElement('span');
+          span.textContent = text[i];
+          span.style.animation = `writing ${delay}ms forwards`;
+          textContainer.appendChild(span);
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  const countdownElement = document.getElementById('time-left');
-  const messageElement = document.getElementById('message');
-  const targetDate = new Date('2024-01-22T09:00:00');
-
-
-  function submitComment() {
-    const commentInput = document.getElementById("comment-input");
-    const comment = commentInput.value.trim();
-
-    if (comment) {
-      addDoc(collection(db, "comments"), {
-        text: comment,
-        timestamp: serverTimestamp()
-      }).then(() => {
-        commentInput.value = "";
-      });
-    }
-  }
-
-  function loadRecentComments() {
-    const commentsQuery = query(collection(db, "comments"), orderBy("timestamp", "desc"), limit(5));
-    return getDocs(commentsQuery).then((querySnapshot) => {
-      comments = querySnapshot.docs.map(doc => doc.data().text).reverse(); // 댓글들을 역순으로 배열에 저장
-      showComment();
-    });
-  }
-
-
-  let currentCommentIndex = 0;
-  let comments = [];
-
-  function showComment() {
-    // 기존 댓글을 제거
-    messageElement.innerHTML = '';
-
-    if (comments.length > 0) {
-      // 현재 인덱스의 댓글을 표시
-      const comment = document.createElement("p");
-      comment.textContent = comments[currentCommentIndex];
-      comment.style.animation = 'fade 5s linear';
-      messageElement.appendChild(comment);
-
-      // 다음 댓글로 인덱스 업데이트
-      currentCommentIndex = (currentCommentIndex + 1) % comments.length;
-    }
-  }
-
-
-  // Firestore에서 실시간으로 댓글 로드
-  function loadComments() {
-    const commentsDiv = document.getElementById("comments");
-    const commentsQuery = query(collection(db, "comments"), orderBy("timestamp", "desc"));
-
-    let initialLoad = true; // 초기 데이터 로드 확인을 위한 플래그
-
-    onSnapshot(commentsQuery, (querySnapshot) => {
-      commentsDiv.innerHTML = ""; // 댓글 목록을 초기화
-      querySnapshot.forEach((doc) => {
-        const comment = document.createElement("p");
-        comment.textContent = doc.data().text;
-        commentsDiv.appendChild(comment);
-      });
-
-      if (initialLoad) {
-        hideLoading(); // 최초 데이터 로드 시 로딩 숨김
-        initialLoad = false; // 플래그 업데이트
+          if (i === text.length - 1 && callback) {
+            setTimeout(callback, delay); // 현재 텍스트의 애니메이션이 끝나면 콜백 함수 실행
+          }
+        }, delay * i);
       }
+    }
+
+    // 첫 번째 텍스트 "송영빈"의 애니메이션을 시작
+    animateText(texts[0], function() {
+      // "송영빈"의 애니메이션이 끝나면 "ㄷㄷㄷ"의 애니메이션 시작
+      animateText(texts[1]);
     });
-  }
+  });
 
 
-  function updateCountdown() {
-    const currentTime = new Date();
-    const difference = targetDate - currentTime;
-
-    const hours = Math.floor(difference / (1000 * 60 * 60));
-    const minutes = Math.floor((difference / (1000 * 60)) % 60);
-    const seconds = Math.floor((difference / 1000) % 60);
-
-    countdownElement.innerText = `${hours}시간 ${minutes}분 ${seconds}초`;
-  }
-
-  function showLoading() {
-    document.getElementById('loading').style.display = 'block';
-  }
-
-  function hideLoading() {
-    document.getElementById('loading').style.display = 'none';
-  }
-
-  // 데이터 로드 전에 로딩 표시
-
-
-  document.getElementById('submit-comment-btn').addEventListener('click', submitComment);
-
-  window.onload = () => {
-    showLoading();
-
-    loadComments().finally(() => {
-      // 데이터 로드 성공 여부와 상관없이 로딩 숨김
-      hideLoading();
-    });
-
-    loadRecentComments();
-  };
-
-  setInterval(showComment, 3000); // 5초마다 댓글 변경
-  setInterval(updateCountdown, 1000);
 </script>
 </body>
 </html>
-
-
-
